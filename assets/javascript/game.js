@@ -19,3 +19,24 @@ var word = [];
 var incorrectKeys = [];
 
 // grabbing html id's
+var winsEl = document.getElementById("wins");
+var lossesEl = document.getElementById("losses");
+var gamesPlayedEl = document.getElementById("games-played");
+var wordEl = document.getElementById("word");
+var incorrectKeysEl = document.getElementById("incorrect");
+var remainingGuessesEl = document.getElementById("remaining-guesses");
+
+// keypress event to initialize game
+document.onkeyup = function(event) {
+
+
+
+
+
+
+    // Display the score
+    winsEl.textContent = wins;
+    lossesEl.textContent = losses;
+    gamesPlayedEl.textContent = gamesPlayed;
+    remainingGuessesEl.textContent = remainingGuesses;
+}
