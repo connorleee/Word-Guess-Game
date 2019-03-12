@@ -41,12 +41,14 @@ var remainingGuessesEl = document.getElementById("remaining-guesses");
 // Game state Booleans
 var isStarted = false;
 var isFinished = false;
-var isCorrect = false;
 
 // Blank arrays
-var word = [];
+var displayWord = [];
 var incorrectKeys = [];
 
+// Choose a random word from the words array
+var rndWord = words[Math.floor(Math.random()*words.length)].split("");
+console.log(rndWord);
 
 // Beginning game state
 function gameStart(){
@@ -55,30 +57,38 @@ function gameStart(){
     lossesEl.textContent = losses;
     gamesPlayedEl.textContent = gamesPlayed;
      
-    // Choose a random word from the words array
-    var rndWord = words[Math.floor(Math.random()*words.length)];
-    console.log(rndWord);
-    var wordLength = rndWord.length;
-    console.log(wordLength);
-    
     // variable for unguessed letters
     var us = " ___ ";
 
     // Display number of underscores cooresponding with length of random word
-    for (let i = 0; i < wordLength; i++) {  
-        word[i] = us;
+    for (let i = 0; i < rndWord.length; i++) {  
+        displayWord[i] = us;        
     }
 
     // Display Word
-    wordEl.textContent = word;
-    console.log(word);
+    wordEl.textContent = displayWord;
+    console.log(displayWord);
+}
+
+//determine index(es) of guessed letters
+function getAllIndexes(arr, val) {
+    var indexes = [], i;
+    for(i = 0; i < arr.length; i++)
+        if (arr[i] === val)
+            indexes.push(i);
+    
+    return indexes;  //returns 0 length array if nothing is found
 }
 
 function gameplay(){
     // keypress event to guess letters
     document.onkeyup = function(event) {
-       if (isCorrect === true) {
-           
+        var letterIndexes = getAllIndexes(rndWord, event.key);
+
+        // if guess is in word, letterIndexes length will be greater than 0
+        if (letterIndexes.length > 0) {
+           wins = wins++
+
        } else {
 
        };
@@ -92,3 +102,4 @@ function gameplay(){
 }
 
 gameStart();
+gameplay();
