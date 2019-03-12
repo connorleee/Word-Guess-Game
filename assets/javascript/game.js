@@ -28,7 +28,7 @@ var words = [
 var wins = 0;
 var losses = 0;
 var gamesPlayed = 0;
-var remainingGuesses = 15;
+var remainingGuesses = 10;
 
 // grabbing html id's
 var winsEl = document.getElementById("wins");
@@ -58,7 +58,7 @@ function gameStart(){
     // gamesPlayedEl.textContent = gamesPlayed;
      
     // variable for unguessed letters
-    var us = " ___ ";
+    var us = "_ ";
 
     // Display number of underscores cooresponding with length of random word
     for (let i = 0; i < rndWord.length; i++) {  
@@ -66,7 +66,7 @@ function gameStart(){
     }
 
     // Display Word
-    wordEl.textContent = displayWord;
+    wordEl.textContent = displayWord.join("");
     console.log(displayWord);
 }
 
@@ -105,10 +105,19 @@ function gameplay(){
             console.log(displayWord)
 
             // Overwrite the underscrores
-            wordEl.textContent = displayWord;
+            wordEl.textContent = displayWord.join("");
         
         } else {
             console.log("incorrect")
+
+            // add guessed letter to incorrect keys array
+            incorrectKeys.push(event.key);
+            console.log(incorrectKeys);
+
+            remainingGuesses--;
+
+            remainingGuessesEl.textContent = remainingGuesses;
+            incorrectKeysEl.textContent = incorrectKeys.join(", ");
         }
        
     
