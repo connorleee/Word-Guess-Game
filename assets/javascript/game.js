@@ -46,25 +46,27 @@ var isFinished = false;
 var displayWord = [];
 var incorrectKeys = [];
 
-// Choose a random word from the words array
-var rndWord = words[Math.floor(Math.random()*words.length)].split("");
-console.log(rndWord);
-
 // Beginning game state
 function gameStart(){
     // Display the score
-    // winsEl.textContent = wins;
-    // lossesEl.textContent = losses;
-    // gamesPlayedEl.textContent = gamesPlayed;
-     
+    winsEl.textContent = wins;
+    lossesEl.textContent = losses;
+    gamesPlayedEl.textContent = gamesPlayed;
+    
     // variable for unguessed letters
     var us = "_ ";
-
+    
+    // Choose a random word from the words array
+    var rndWord = words[Math.floor(Math.random()*words.length)].split("");
+    console.log(rndWord);
+    
+    incorrectKeys = [];
+    
     // Display number of underscores cooresponding with length of random word
     for (let i = 0; i < rndWord.length; i++) {  
         displayWord[i] = us;        
     }
-
+    
     // Display Word
     wordEl.textContent = displayWord.join("");
     console.log(displayWord);
@@ -74,56 +76,65 @@ function gameStart(){
 function getAllIndexes(arr, val) {
     var indexes = [], i;
     for(i = 0; i < arr.length; i++)
-        if (arr[i] === val)
-            indexes.push(i);
+    if (arr[i] === val)
+    indexes.push(i);
     return indexes;  //returns 0 length array if nothing is found
 }
 
 function gameplay(){
     // keypress event to guess letters
     document.onkeyup = function(event) {
-
+        
         // array of index positions of selected keys relative to random word
         var letterIndices = getAllIndexes(rndWord, event.key);
         console.log(letterIndices);
-
+        
         // if guess is in word, letterIndices length will be greater than 0
         if (letterIndices.length > 0) {
             console.log("correct")
-
+            
             // replace elements in displayWord by similar elements in similar index
             // Here we have 3 things: displayWord, letterIndices, and guessed letter
             for (let i = 0; i < letterIndices.length; i++) {
                 // update displayWord with event.key in indices equal to letterIndices array 
                 // returning index of array at i index of letterIndicies
                 var position = letterIndices[i];
-
+                
                 console.log(position);
                 // insert value
                 displayWord[position] = event.key;                          
             }
             console.log(displayWord)
-
+            
             // Overwrite the underscrores
             wordEl.textContent = displayWord.join("");
-        
+
+            // End game scenario via win
+            if (displayWord.join(", ") === rndWord) {
+                wins++;
+                gameStart();
+            }
+            
         } else {
             console.log("incorrect")
 
             // add guessed letter to incorrect keys array
             incorrectKeys.push(event.key);
             console.log(incorrectKeys);
-
+            
+            
             remainingGuesses--;
-
+            
             remainingGuessesEl.textContent = remainingGuesses;
             incorrectKeysEl.textContent = incorrectKeys.join(", ");
+
+            // End game scenario via loss
+            if (remainingGuesses = 0){
+                Losses++;
+                gameStart();
+            }
         }
-       
-    
-    
-    
-    
+        
         remainingGuessesEl.textContent = remainingGuesses;
     }
 }
