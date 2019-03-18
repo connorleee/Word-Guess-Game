@@ -39,28 +39,43 @@ var incorrectKeysEl = document.getElementById("incorrect");
 var remainingGuessesEl = document.getElementById("remaining-guesses");
 
 // Game state Booleans
-var isStarted = false;
 var isFinished = false;
 
 // Blank arrays
 var displayWord = [];
 var incorrectKeys = [];
 
-// Choose a random word from the words array
-var rndWord = words[Math.floor(Math.random()*words.length)].split("");
-console.log(rndWord);
+var allowableGuesses = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p",
+"q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+
 
 // Beginning game state
 function gameStart(){
     // Display the score
-    // winsEl.textContent = wins;
-    // lossesEl.textContent = losses;
-    // gamesPlayedEl.textContent = gamesPlayed;
-     
-    // variable for unguessed letters
-    var us = "_ ";
+    winsEl.textContent = wins;
+    lossesEl.textContent = losses;
+    gamesPlayedEl.textContent = gamesPlayed;
+    
+}
+// variable for unguessed letters
+var us = "_ ";
 
-    // Display number of underscores cooresponding with length of random word
+//determine index(es) of guessed letters
+function getAllIndexes(arr, val) {
+    var indexes = [], i;
+    for(i = 0; i < arr.length; i++)
+    if (arr[i] === val)
+    indexes.push(i);
+    return indexes;  //returns 0 length array if nothing is found
+}
+
+
+function gamePlay(){
+
+    // Choose a random word from the words array
+    var rndWord = words[Math.floor(Math.random()*words.length)].split("");
+    console.log(rndWord);
+    
     for (let i = 0; i < rndWord.length; i++) {  
         displayWord[i] = us;        
     }
@@ -68,65 +83,91 @@ function gameStart(){
     // Display Word
     wordEl.textContent = displayWord.join("");
     console.log(displayWord);
-}
 
-//determine index(es) of guessed letters
-function getAllIndexes(arr, val) {
-    var indexes = [], i;
-    for(i = 0; i < arr.length; i++)
-        if (arr[i] === val)
-            indexes.push(i);
-    return indexes;  //returns 0 length array if nothing is found
-}
-
-function gameplay(){
     // keypress event to guess letters
     document.onkeyup = function(event) {
+        event.key = event.key.toLowerCase()
 
-        // array of index positions of selected keys relative to random word
-        var letterIndices = getAllIndexes(rndWord, event.key);
-        console.log(letterIndices);
+        // Ensures user inputs a letter
+        if (allowableGuesses.includes(event.key)){
 
-        // if guess is in word, letterIndices length will be greater than 0
-        if (letterIndices.length > 0) {
-            console.log("correct")
+            // Ensures user doesn't input duplicate letter
+            if (incorrectKeys.includes(event.key)){
+                // Does nothing
+            } else {
 
-            // replace elements in displayWord by similar elements in similar index
-            // Here we have 3 things: displayWord, letterIndices, and guessed letter
-            for (let i = 0; i < letterIndices.length; i++) {
-                // update displayWord with event.key in indices equal to letterIndices array 
-                // returning index of array at i index of letterIndicies
-                var position = letterIndices[i];
+                // array of index positions of selected keys relative to random word
+                var letterIndices = getAllIndexes(rndWord, event.key);
+                console.log(letterIndices);
 
-                console.log(position);
-                // insert value
-                displayWord[position] = event.key;                          
+                // if guess is in word, letterIndices length will be greater than 0
+                if (letterIndices.length > 0) {
+                    console.log("correct")
+
+                    // replace elements in displayWord by similar elements in similar index
+                    // Here we have 3 things: displayWord, letterIndices, and guessed letter
+                    for (let i = 0; i < letterIndices.length; i++) {
+                        // update displayWord with event.key in indices equal to letterIndices array 
+                        // returning index of array at i index of letterIndicies
+                        var position = letterIndices[i];
+
+                        console.log(position);
+                        // insert value
+                        displayWord[position] = event.key;                          
+                    }
+                    console.log(displayWord)
+
+                    // Overwrite the underscrores
+                    wordEl.textContent = displayWord.join("");
+                
+                } else {
+                    console.log("incorrect")
+
+                    // add guessed letter to incorrect keys array
+                    incorrectKeys.push(event.key);
+                    console.log("incorrect keys: " + incorrectKeys);
+
+                    remainingGuesses--;
+
+                    remainingGuessesEl.textContent = remainingGuesses;
+                    incorrectKeysEl.textContent = incorrectKeys.join(", ");
+                }
+                
+                remainingGuessesEl.textContent = remainingGuesses;
+            
+                console.log("random word: " + rndWord);
+                console.log("display word: " + displayWord);
+
+                // win case
+                if(displayWord.includes("_ ")){
+                    isFinished = false;
+                } else {
+                    isFinished = true;
+                    wins++;
+                    gamesPlayed++;
+                    reset();
+                }
+            
+                // loss case
+                if (remainingGuesses === 0) {
+                    losses++;
+                    gamesPlayed++;
+                    reset();
+                }    
             }
-            console.log(displayWord)
-
-            // Overwrite the underscrores
-            wordEl.textContent = displayWord.join("");
-        
-        } else {
-            console.log("incorrect")
-
-            // add guessed letter to incorrect keys array
-            incorrectKeys.push(event.key);
-            console.log(incorrectKeys);
-
-            remainingGuesses--;
-
-            remainingGuessesEl.textContent = remainingGuesses;
-            incorrectKeysEl.textContent = incorrectKeys.join(", ");
         }
-       
-    
-    
-    
-    
-        remainingGuessesEl.textContent = remainingGuesses;
     }
 }
 
-gameStart();
-gameplay();
+function reset(){
+    console.log("Begin Game")
+    remainingGuesses = 10;
+    displayWord = [];
+    incorrectKeys = [];
+    rndWord = [];
+    isFinished = false;
+    gameStart();
+    gamePlay();
+}
+
+reset();
