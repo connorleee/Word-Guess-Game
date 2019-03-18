@@ -163,7 +163,9 @@ function reset(){
     console.log("Begin Game")
     remainingGuesses = 10;
     displayWord = [];
+    wordEl.textContent = displayWord.join("");
     incorrectKeys = [];
+    incorrectKeysEl.textContent = incorrectKeys.join(", ");
     rndWord = [];
     isFinished = false;
     gameStart();
